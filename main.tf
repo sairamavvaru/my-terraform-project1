@@ -44,19 +44,20 @@ resource "aws_security_group" "web_sg" {
 }
 
 resource "aws_instance" "web" {
-  ami           = "ami-0c02fb55956c7d316" # Amazon Linux 2 (adjust region)
+  ami           = "ami-0c02fb55956c7d316"
   instance_type = "t2.micro"
   subnet_id     = aws_subnet.public.id
-  security_groups = [aws_security_group.web_sg.name]
 
-  user_data = <<-EOF
-              #!/bin/bash
-              yum update -y
-              yum install -y nginx
-              systemctl start nginx
-              systemctl enable nginx
-              echo "Hello from Terraform" > /usr/share/nginx/html/index.html
-              EOF
+  vpc_security_group_ids = [aws_security_group.web_sg.id]
+
+  user_data = <<-EOT
+    #!/bin/bash
+    yum update -y
+    yum install -y nginx
+    systemctl start nginx
+    systemctl enable nginx
+    echo "Hello from Terraform" > /usr/share/nginx/html/index.html
+  EOT
 
   tags = {
     Name = "TerraformWebServer"

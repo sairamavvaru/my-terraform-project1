@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('Clone Code') {
       steps {
-        git 'https://github.com/<your-repo>.git'
+        git 'https://github.com/sairamavvaru/my-terraform-project1.git'
       }
     }
     stage('Build and Test') {

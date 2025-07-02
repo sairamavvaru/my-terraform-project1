@@ -1,0 +1,23 @@
+pipeline {
+  agent any
+  stages {
+    stage('Clone Code') {
+      steps {
+        git 'https://github.com/<your-repo>.git'
+      }
+    }
+    stage('Build and Test') {
+      steps {
+        sh 'echo "Running tests..."'
+        sh './test.sh'
+      }
+    }
+    stage('Deploy') {
+      steps {
+        sshagent(['ec2-key']) {
+          sh 'scp -o StrictHostKeyChecking=no -i ~/.ssh/ec2-key.pem ./webapp/index.html ec2-user@<EC2_PUBLIC_IP>:/usr/share/nginx/html/'
+        }
+      }
+    }
+  }
+}
